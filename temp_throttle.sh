@@ -71,6 +71,7 @@ CURRENT_FREQ=2
 
 # This is a list of possible locations to read the current system temperature.
 TEMPERATURE_FILES="
+/sys/class/thermal/thermal_zone4/temp
 /sys/class/thermal/thermal_zone0/temp
 /sys/class/thermal/thermal_zone1/temp
 /sys/class/thermal/thermal_zone2/temp
@@ -116,7 +117,7 @@ set_freq () {
 # Will reduce the frequency of cpus if possible.
 throttle () {
 	if [ $CURRENT_FREQ -lt $FREQ_LIST_LEN ]; then
-		CURRENT_FREQ=$((CURRENT_FREQ + 1))
+		CURRENT_FREQ=$((CURRENT_FREQ + 4))
 		echo -n "throttle "
 		set_freq $CURRENT_FREQ
 	fi
@@ -151,5 +152,5 @@ while true; do
 	elif [ $TEMP -le $LOW_TEMP ]; then # Unthrottle if cool.
 		unthrottle
 	fi
-	sleep 3 # The amount of time between checking temperatures.
+	sleep 1 # The amount of time between checking temperatures.
 done
