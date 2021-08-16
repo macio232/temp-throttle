@@ -41,10 +41,6 @@ fi
 # The frequency will increase when low temperature is reached.
 LOW_TEMP=$((MAX_TEMP - 5))
 
-CORES=$(nproc) # Get number of CPU cores.
-echo -e "Number of CPU cores detected: $CORES\n"
-CORES=$((CORES - 1)) # Subtract 1 from $CORES for easier counting later.
-
 # Temperatures internally are calculated to the thousandth.
 MAX_TEMP=${MAX_TEMP}000
 LOW_TEMP=${LOW_TEMP}000
@@ -104,14 +100,7 @@ set_freq () {
 	# From the string FREQ_LIST, we choose the item at index CURRENT_FREQ.
 	FREQ_TO_SET=$(echo $FREQ_LIST | cut -d " " -f $CURRENT_FREQ)
 	echo $FREQ_TO_SET
-	for i in $(seq 0 $CORES); do
-		# Try to set core frequency by writing to /sys/devices.
-		{ echo $FREQ_TO_SET 2> /dev/null > /sys/devices/system/cpu/cpu$i/cpufreq/scaling_max_freq; } ||
-		# Else, try to set core frequency using command cpufreq-set.
-		{ cpufreq-set -c $i --max $FREQ_TO_SET > /dev/null; } ||
-		# Else, return error message.
-		{ err_exit "Failed to set frequency CPU core$i. Run script as Root user. Some systems may require to install the package cpufrequtils."; }
-	done
+	cpupower frequency-set -u $FREQ_TO_SET > /dev/null
 }
 
 # Will reduce the frequency of cpus if possible.
