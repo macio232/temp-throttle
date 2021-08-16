@@ -117,7 +117,12 @@ set_freq () {
 # Will reduce the frequency of cpus if possible.
 throttle () {
 	if [ $CURRENT_FREQ -lt $FREQ_LIST_LEN ]; then
-		CURRENT_FREQ=$((CURRENT_FREQ + 4))
+	  if [ $CURRENT_FREQ -le 16 ]; then
+	    JUMPFREQ=4
+	  else
+	    JUMPFREQ=1
+	  fi
+		CURRENT_FREQ=$((CURRENT_FREQ + JUMPFREQ))
 		echo -n "throttle "
 		set_freq $CURRENT_FREQ
 	fi
@@ -152,5 +157,5 @@ while true; do
 	elif [ $TEMP -le $LOW_TEMP ]; then # Unthrottle if cool.
 		unthrottle
 	fi
-	sleep 1 # The amount of time between checking temperatures.
+	sleep 0.5 # The amount of time between checking temperatures.
 done
