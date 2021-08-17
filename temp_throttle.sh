@@ -39,7 +39,7 @@ fi
 ### START Initialize Global variables.
 
 # The frequency will increase when low temperature is reached.
-LOW_TEMP=$((MAX_TEMP - 5))
+LOW_TEMP=$((MAX_TEMP - 7))
 
 # Temperatures internally are calculated to the thousandth.
 MAX_TEMP=${MAX_TEMP}000
@@ -107,7 +107,7 @@ set_freq () {
 throttle () {
 	if [ $CURRENT_FREQ -lt $FREQ_LIST_LEN ]; then
 	  if [ $CURRENT_FREQ -le 16 ]; then
-	    JUMPFREQ=4
+	    JUMPFREQ=6
 	  else
 	    JUMPFREQ=1
 	  fi
