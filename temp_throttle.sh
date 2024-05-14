@@ -89,7 +89,8 @@ CURRENT_FREQ=2
 #
 #[ $TEMP_FILE == "null" ] && err_exit "The location for temperature reading was not found."
 
-TEMP_FILE="/sys/class/thermal/thermal_zone6/temp"
+TEMP_FILE=$(find /sys/class/thermal/ -type l -name "*thermal_zone*" | while read -r dir; do [[ $(cat "$dir/type") == "x86_pkg_temp" ]] && echo "$dir/temp"; done | head -n 1)
+echo "TEMP_FILE=$TEMP_FILE"
 
 
 ### END Initialize Global variables.
